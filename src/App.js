@@ -52,18 +52,23 @@ function App() {
   };
 
   const handleFavoriteToggle = (videoId) => {
-    const currentMyFavoritesList = JSON.parse(window.localStorage.getItem('myFavoritesList'));
-    console.log(currentMyFavoritesList);
+    const currentMyFavoritesList = JSON.parse(
+      window.localStorage.getItem("myFavoritesList")
+    );
+    // console.log(currentMyFavoritesList);
+    const hasAnyFavorite = currentMyFavoritesList&& currentMyFavoritesList.length > 0;
     let newMyFavoritesList = [];
 
-    if (currentMyFavoritesList.includes(videoId)) {
+    if (hasAnyFavorite && currentMyFavoritesList.includes(videoId)) {
       newMyFavoritesList = currentMyFavoritesList.filter(
         (favoriteVideoId) => favoriteVideoId !== videoId
       );
     } else {
-      newMyFavoritesList = [...currentMyFavoritesList, videoId];
+      newMyFavoritesList = hasAnyFavorite
+        ? [...currentMyFavoritesList, videoId]
+        : [videoId];
     }
-    console.log(newMyFavoritesList);
+    // console.log(newMyFavoritesList);
 
     window.localStorage.setItem(
       "myFavoritesList",

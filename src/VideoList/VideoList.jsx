@@ -21,7 +21,7 @@ const VidoeList = (props) => {
   }, []);
 
   return (
-    <div>
+    <div className={cx('video-list-page')}>
       <h2>VideoList</h2>
       <p>{videoTotalResults} results</p>
       <div>
