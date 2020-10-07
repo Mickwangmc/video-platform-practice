@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { VideoContainer } from '../components/VideoContainer';
 import classnames from "classnames";
 import style from "./style.css";
 
@@ -9,37 +9,26 @@ const VidoeList = (props) => {
   const {
     videoList,
     videoTotalResults,
+    loadVideoList,
     handlePaginate,
     handleFavoriteToggle,
   } = props;
 
+  useEffect(() => {
+    loadVideoList({ 
+      type = "videos"
+    });
+  }, []);
+
   return (
     <div>
-      <p>VidoeList: {videoTotalResults} results</p>
+      <h2>VideoList</h2>
+      <p>{videoTotalResults} results</p>
       <div>
         <button onClick={() => handlePaginate("PREV")}>PREV</button>
         <button onClick={() => handlePaginate("NEXT")}>NEXT</button>
       </div>
-      {videoList.map((videoObj) => {
-        const {
-          snippet: {
-            localized: { title, description },
-            thumbnails: {
-              medium: { url },
-            },
-          },
-          contentDetails: { duration },
-          id,
-        } = videoObj;
-
-        return (
-          <div key={id}>
-            <h5>{title}</h5>
-            <p>{description}</p>
-            <p>{duration}</p>
-          </div>
-        );
-      })}
+      <VideoContainer videoList={videoList} handleFavoriteToggle={handleFavoriteToggle}/>
     </div>
   );
 };
