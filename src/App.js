@@ -6,7 +6,7 @@ import { MyFavorites } from './MyFavorites';
 import { VideoList } from './VideoList';
 import { Watch } from './Watch';
 import classnames from 'classnames';
-import style from './App.css';
+import style from './app.scss';
 
 const cx = classnames.bind(style);
 
@@ -109,6 +109,11 @@ function App() {
   return (
     <Context.Provider value={store}>
       <div className="App">
+        {isLoading && (
+          <div className={cx("loading-mask")}>
+            <p>Loading...</p>
+          </div>
+        )}
         <Router>
           <nav>
             <Link to="/">
