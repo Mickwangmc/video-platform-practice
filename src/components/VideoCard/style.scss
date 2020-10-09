@@ -45,7 +45,7 @@
   }
 
   > button {
-    display: none;
+    display: block;
     position: absolute;
     right: 4px;
     top: 4px;
@@ -54,6 +54,10 @@
     height: 36px;
     background-color: rgba(60, 60, 60, 0.7);
     border: none;
+
+    @media screen and (min-width: 960px) {
+      display: none;
+    }
 
     &:hover {
       cursor: pointer;
@@ -72,6 +76,7 @@
   text-align: left;
 
   > h5 {
+    margin-bottom: 8px;
     font-size: 16px;
     color: #030303;
     display: -webkit-box;

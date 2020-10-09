@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import "moment-duration-format";
+import Context from "../../Context";
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import classnames from "classnames";
 import style from "./style.scss";
@@ -9,7 +10,9 @@ import style from "./style.scss";
 const cx = classnames.bind(style);
 
 const VideoCard = (props) => {
-  const { videoContent, handleFavoriteToggle } = props;
+  const { currentMyFavoritesList, handleFavoriteToggle } = useContext(Context);
+  const [isFavorite, setIsFavorite] = useState(false); 
+  const { videoContent } = props;
   const {
     snippet: {
       localized: { title, description },
@@ -21,12 +24,9 @@ const VideoCard = (props) => {
     id,
   } = videoContent;
 
-  const currentMyFavoritesList = JSON.parse(
-    window.localStorage.getItem("myFavoritesList")
-  );
-
-  const isFavorite =
-    currentMyFavoritesList && currentMyFavoritesList.includes(id);
+  useEffect(() => {
+    setIsFavorite(currentMyFavoritesList && currentMyFavoritesList.includes(id))
+  }, []);
 
   const transformDuration = (duration) =>
     moment.duration(duration).format("h:mm:ss").padStart(4, "0:0");
@@ -34,6 +34,7 @@ const VideoCard = (props) => {
   const handleFavoriteClick = event => {
     event.preventDefault();
     handleFavoriteToggle(id);
+    setIsFavorite(!isFavorite);
   };
 
   return (

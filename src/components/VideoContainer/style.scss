@@ -1,0 +1,19 @@
+.video-container {
+  margin: 24px auto;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-wrap: wrap;
+
+  @media screen and (min-width: 640px) {
+    max-width: 640px;
+  }
+
+  @media screen and (min-width: 960px) {
+    max-width: 960px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    max-width: 1280px;
+  }
+}

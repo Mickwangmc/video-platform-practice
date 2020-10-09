@@ -1,34 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import Context from '../Context';
 import { VideoContainer } from '../components/VideoContainer';
 import classnames from "classnames";
-import style from "./style.css";
+import style from "./style.scss";
 
 const cx = classnames.bind(style);
 
-const VidoeList = (props) => {
+const VidoeList = () => {
   const {
-    videoList,
     videoTotalResults,
     loadVideoList,
     handlePaginate,
-    handleFavoriteToggle,
-  } = props;
+  } = useContext(Context);
 
   useEffect(() => {
     loadVideoList({ 
-      type = "videos"
+      type: "videos"
     });
   }, []);
 
   return (
-    <div className={cx('video-list-page')}>
+    <div className={cx("video-list-page")}>
       <h2>VideoList</h2>
-      <p>{videoTotalResults} results</p>
-      <div>
+      <p className={cx('videos-total-results')}>共有： {videoTotalResults} 部影片</p>
+      <VideoContainer />
+      <div className={cx('paginate-buttons-container')}>
         <button onClick={() => handlePaginate("PREV")}>PREV</button>
         <button onClick={() => handlePaginate("NEXT")}>NEXT</button>
       </div>
-      <VideoContainer videoList={videoList} handleFavoriteToggle={handleFavoriteToggle}/>
     </div>
   );
 };

@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
+import Context from "../../Context";
 import { VideoCard } from '../VideoCard'
 import classnames from "classnames";
-import style from "./style.css";
+import style from "./style.scss";
 
 const cx = classnames.bind(style);
 
-const VideoContainer = (props) => {
-  const { videoList, handleFavoriteToggle } = props;
+const VideoContainer = () => {
+  const { videoList } = useContext(Context);
 
   return (
-    <div>
+    <div className={cx('video-container')}>
       {
         videoList.map((videoObj) => {
           return (
             <VideoCard
               key={videoObj.id}
               videoContent={videoObj}
-              handleFavoriteToggle={handleFavoriteToggle}
             />
           );
         })

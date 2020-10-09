@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
+import Context from './Context';
 import { MyFavorites } from './MyFavorites';
 import { VideoList } from './VideoList';
 import { Watch } from './Watch';
@@ -10,38 +11,60 @@ import style from './App.css';
 const cx = classnames.bind(style);
 
 function App() {
+  const [isLoading, setIsLoading] = useState(false);
   const [videoList, setVideoList] = useState([]);
   const [videoTotalResults, setVideoTotalResults] = useState(0);
-  const [pageTokens, setPageTokens] = useState({ PREV: '', NEXT: '' });
+  const [pageTokens, setPageTokens] = useState({ PREV: "", NEXT: "" });
 
-  useEffect(() => {
-    loadVideoList();
-  }, [])
+  const currentMyFavoritesList = JSON.parse(
+    window.localStorage.getItem("myFavoritesList")
+  );
 
-  const loadVideoList = async ({ idListString = "", pageToken = "" } = {}) => {
-    console.log("idListString: ", idListString, ", pageToken:", pageToken);
+  /**
+   * @param {string} type          API type, could be "videos" or "search" in current usage
+   * @param {string} idListString  look for specific videos with type videos.
+   * @param {string} pageToken     look for specific results
+   */
+  const loadVideoList = async ({
+    type = "videos",
+    idListString = "",
+    pageToken = "",
+  } = {}) => {
+    console.log("type: ", type, "; idListString: ", idListString, "; pageToken:", pageToken);
+
+    setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&${
-          idListString ? `id=${idListString}` : "chart=mostPopular"
+        `https://www.googleapis.com/youtube/v3/${type}?part=snippet%2CcontentDetails${
+          type === "videos"
+            ? idListString
+              ? `&id=${idListString}`
+              : "&chart=mostPopular"
+            : ""
         }${
           pageToken ? `&pageToken=${pageToken}` : ""
         }&regionCode=TW&maxResults=12&key=${
           process.env.REACT_APP_GOOGLE_API_KEY
         }`
       );
-      // console.log(response.data);
+      console.log(response.data);
       const {
         items,
         nextPageToken,
         prevPageToken,
         pageInfo: { totalResults },
       } = response.data;
-      setVideoList(items);
+
+      setVideoList(idListString ? [...videoList, ...items] : items);
       setVideoTotalResults(totalResults);
-      setPageTokens({ NEXT: nextPageToken || "", PREV: prevPageToken || "" });
+      setPageTokens({
+        PREV: prevPageToken || pageTokens.PREV,
+        NEXT: nextPageToken || pageTokens.NEXT
+      });
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,11 +75,7 @@ function App() {
   };
 
   const handleFavoriteToggle = (videoId) => {
-    const currentMyFavoritesList = JSON.parse(
-      window.localStorage.getItem("myFavoritesList")
-    );
-    // console.log(currentMyFavoritesList);
-    const hasAnyFavorite = currentMyFavoritesList&& currentMyFavoritesList.length > 0;
+    const hasAnyFavorite = currentMyFavoritesList && currentMyFavoritesList.length > 0;
     let newMyFavoritesList = [];
 
     if (hasAnyFavorite && currentMyFavoritesList.includes(videoId)) {
@@ -68,7 +87,6 @@ function App() {
         ? [...currentMyFavoritesList, videoId]
         : [videoId];
     }
-    // console.log(newMyFavoritesList);
 
     window.localStorage.setItem(
       "myFavoritesList",
@@ -76,32 +94,38 @@ function App() {
     );
   };
 
+  const store = {
+    isLoading,
+    videoTotalResults,
+    videoList,
+    // videoList: mockData,
+    currentMyFavoritesList,
+    setVideoList,
+    loadVideoList,
+    handlePaginate,
+    handleFavoriteToggle,
+  };
+
   return (
-    <div className="App">
-      <Router>
-        <nav>
-          <Link to="/">List</Link>
-          <Link to="/myfavorites">My Favorites</Link>
-        </nav>
-        <Switch>
-          <Route exact path="/">
-            <VideoList
-              videoTotalResults={videoTotalResults}
-              videoList={videoList}
-              setVideoList={setVideoList}
-              handlePaginate={handlePaginate}
-              handleFavoriteToggle={handleFavoriteToggle}
-            />
-          </Route>
-          <Route path="/myfavorites">
-            <MyFavorites handleFavoriteToggle={handleFavoriteToggle} />
-          </Route>
-          <Route path="/watch/:videoId">
-            <Watch handleFavoriteToggle={handleFavoriteToggle} />
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+    <Context.Provider value={store}>
+      <div className="App">
+        <Router>
+          <nav>
+            <Link to="/">
+              <div>Video List</div>
+            </Link>
+            <Link to="/myfavorites">
+              <div>My Favorites</div>
+            </Link>
+          </nav>
+          <Switch>
+            <Route exact path="/" component={VideoList}></Route>
+            <Route path="/myfavorites" component={MyFavorites}></Route>
+            <Route path="/watch/:videoId" component={Watch}></Route>
+          </Switch>
+        </Router>
+      </div>
+    </Context.Provider>
   );
 }
 
