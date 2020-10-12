@@ -39,3 +39,63 @@
     }
   }
 }
+
+.watch-page-wrapper {
+  margin: 24px auto;
+  width: 100%;
+
+}
+
+.player-container {
+  width: 100%;
+}
+
+.info-container {
+  margin: auto;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+
+  @media screen and (min-width: 640px) {
+    max-width: 640px;
+  }
+
+  @media screen and (min-width: 960px) {
+    max-width: 960px;
+  }
+
+  @media screen and (min-width: 1280px) {
+    max-width: 1280px;
+  }
+}
+
+.main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  > h2 {
+    width: 60%;
+  }
+
+  > button {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    background-color: transparent;
+    border: 2px solid gray;
+    border-radius: 2px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #FFFFFF;
+      cursor: pointer;
+    }
+  }
+}
+
+.sub-info {
+  width: 80%;
+  word-break: break-all;
+}

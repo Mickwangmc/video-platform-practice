@@ -6,10 +6,14 @@ import style from "./style.scss";
 
 const cx = classnames.bind(style);
 
+const ASPECT_RATIO = 16 / 9;
+
 const Player = (props) => {
   const playerRef = useRef(null);
   const { videoSrc } = props;
   const [isPlaying, setIsPlaying] = useState(true);
+
+  const isMobile = window.innerWidth < 960;
 
   let player;
 
@@ -64,8 +68,10 @@ const Player = (props) => {
             type: "application/x-mpegURL",
           },
         ],
-        width: "600",
-        height: "400",
+        width: isMobile ? window.outerWidth : Math.min(window.outerWidth * 0.8, 960),
+        height: isMobile
+          ? window.outerWidth / ASPECT_RATIO
+          : Math.min(window.outerWidth / ASPECT_RATIO, 960) * 0.8,
         controls: true,
       },
       () => {}
@@ -97,6 +103,7 @@ const Player = (props) => {
         id="my-video"
         className="video-js vjs-big-play-centered"
         ref={playerRef}
+        style={{ margin: 'auto' }}
       />
     </div>
   );
