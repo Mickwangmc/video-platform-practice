@@ -5,6 +5,8 @@ import Context from './Context';
 import { MyFavorites } from './MyFavorites';
 import { VideoList } from './VideoList';
 import { Watch } from './Watch';
+import { MdLocalMovies } from 'react-icons/md';
+import { BsBookmarksFill } from 'react-icons/bs';
 import classnames from 'classnames';
 import style from './app.scss';
 
@@ -19,6 +21,8 @@ function App() {
   const currentMyFavoritesList = JSON.parse(
     window.localStorage.getItem("myFavoritesList")
   );
+
+  const isMobile = window.innerWidth < 960;
 
   /**
    * @param {string} type          API type, could be "videos" or "search" in current usage
@@ -106,6 +110,19 @@ function App() {
     handleFavoriteToggle,
   };
 
+  const renderNav = () => {
+    return (
+      <nav>
+        <Link to="/">
+          <div><MdLocalMovies />Video List</div>
+        </Link>
+        <Link to="/myfavorites">
+          <div><BsBookmarksFill />My Favorites</div>
+        </Link>
+      </nav>
+    )
+  }
+
   return (
     <Context.Provider value={store}>
       <div className="App">
@@ -115,19 +132,13 @@ function App() {
           </div>
         )}
         <Router>
-          <nav>
-            <Link to="/">
-              <div>Video List</div>
-            </Link>
-            <Link to="/myfavorites">
-              <div>My Favorites</div>
-            </Link>
-          </nav>
+          {!isMobile && renderNav()}
           <Switch>
             <Route exact path="/" component={VideoList}></Route>
             <Route path="/myfavorites" component={MyFavorites}></Route>
             <Route path="/watch/:videoId" component={Watch}></Route>
           </Switch>
+          {isMobile && renderNav()}
         </Router>
       </div>
     </Context.Provider>
