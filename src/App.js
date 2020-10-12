@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
 import Context from './Context';
@@ -14,6 +14,8 @@ const cx = classnames.bind(style);
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowAddPrompt, setIsShowAddPrompt] = useState(false);
+  const [isShowRemovePrompt, setIsShowRemovePrompt] = useState(false);
   const [videoList, setVideoList] = useState([]);
   const [videoTotalResults, setVideoTotalResults] = useState(0);
   const [pageTokens, setPageTokens] = useState({ PREV: "", NEXT: "" });
@@ -86,10 +88,22 @@ function App() {
       newMyFavoritesList = currentMyFavoritesList.filter(
         (favoriteVideoId) => favoriteVideoId !== videoId
       );
+
+      setIsShowRemovePrompt(true);
+
+      setTimeout(() => {
+        setIsShowRemovePrompt(false);
+      }, 1000);
     } else {
       newMyFavoritesList = hasAnyFavorite
         ? [...currentMyFavoritesList, videoId]
         : [videoId];
+
+      setIsShowAddPrompt(true);
+
+      setTimeout(() => {
+        setIsShowAddPrompt(false);
+      }, 1000);
     }
 
     window.localStorage.setItem(
@@ -102,7 +116,6 @@ function App() {
     isLoading,
     videoTotalResults,
     videoList,
-    // videoList: mockData,
     currentMyFavoritesList,
     setVideoList,
     loadVideoList,
@@ -129,6 +142,16 @@ function App() {
         {isLoading && (
           <div className={cx("loading-mask")}>
             <p>Loading...</p>
+          </div>
+        )}
+        {isShowAddPrompt && (
+          <div className={cx("toggle-favorite-prompt")}>
+            <span>Added to Favorites!</span>
+          </div>
+        )}
+        {isShowRemovePrompt && (
+          <div className={cx("toggle-favorite-prompt")}>
+            <span>Removed from Favorites!</span>
           </div>
         )}
         <Router>
