@@ -24,6 +24,10 @@ const MyFavorites = () => {
     currentMyFavoritesList && currentMyFavoritesList.length > VIDEOS_PER_LOAD;
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const idListString = hasAnyFavorite
       ? currentMyFavoritesList
           .filter(
@@ -58,7 +62,7 @@ const MyFavorites = () => {
   };
 
   return (
-    <div>
+    <div className={cx('favorites-page')}>
       <h2>My Favorites</h2>
       <p className={cx("videos-total-results")}>
         {hasAnyFavorite

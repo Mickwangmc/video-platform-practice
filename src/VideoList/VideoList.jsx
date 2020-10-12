@@ -14,6 +14,8 @@ const VidoeList = () => {
   } = useContext(Context);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     loadVideoList({ 
       type: "videos"
     });

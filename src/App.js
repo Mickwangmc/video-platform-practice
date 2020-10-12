@@ -78,6 +78,8 @@ function App() {
     loadVideoList({
       pageToken: pageTokens[type],
     });
+
+    window.scrollTo(0, 0);
   };
 
   const handleFavoriteToggle = (videoId) => {

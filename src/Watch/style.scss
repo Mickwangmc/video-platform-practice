@@ -41,9 +41,8 @@
 }
 
 .watch-page-wrapper {
-  margin: 24px auto;
+  margin: 24px auto 100px;
   width: 100%;
-
 }
 
 .player-container {
@@ -96,6 +95,10 @@
 }
 
 .sub-info {
-  width: 80%;
+  width: 100%;
   word-break: break-all;
+
+  @media screen and (min-width: 960px) {
+    width: 80%;
+  }
 }
