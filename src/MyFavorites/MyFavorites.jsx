@@ -44,6 +44,7 @@ const MyFavorites = () => {
       loadVideoList({
         type: "videos",
         idListString,
+        isLoadMore: loadedVideoIndex > 0,
       });
     }
   }, [hasAnyFavorite, loadedVideoIndex]);

@@ -29,16 +29,17 @@ function App() {
   /**
    * @param {string} type          API type, could be "videos" or "search" in current usage
    * @param {string} idListString  look for specific videos with type videos.
+   * @param {string} isLoadMore    define should clear video list or not
    * @param {string} pageToken     look for specific results
    */
   const loadVideoList = async ({
     type = "videos",
     idListString = "",
+    isLoadMore = false,
     pageToken = "",
   } = {}) => {
-    console.log("type: ", type, "; idListString: ", idListString, "; pageToken:", pageToken);
-
     setIsLoading(true);
+
     try {
       const response = await axios.get(
         `https://www.googleapis.com/youtube/v3/${type}?part=snippet%2CcontentDetails${
@@ -53,7 +54,7 @@ function App() {
           process.env.REACT_APP_GOOGLE_API_KEY
         }`
       );
-      console.log(response.data);
+
       const {
         items,
         nextPageToken,
@@ -61,11 +62,11 @@ function App() {
         pageInfo: { totalResults },
       } = response.data;
 
-      setVideoList(idListString ? [...videoList, ...items] : items);
+      setVideoList(isLoadMore ? [...videoList, ...items] : items);
       setVideoTotalResults(totalResults);
       setPageTokens({
         PREV: prevPageToken || pageTokens.PREV,
-        NEXT: nextPageToken || pageTokens.NEXT
+        NEXT: nextPageToken || pageTokens.NEXT,
       });
     } catch (err) {
       console.log(err);
@@ -83,7 +84,8 @@ function App() {
   };
 
   const handleFavoriteToggle = (videoId) => {
-    const hasAnyFavorite = currentMyFavoritesList && currentMyFavoritesList.length > 0;
+    const hasAnyFavorite =
+      currentMyFavoritesList && currentMyFavoritesList.length > 0;
     let newMyFavoritesList = [];
 
     if (hasAnyFavorite && currentMyFavoritesList.includes(videoId)) {
@@ -129,14 +131,20 @@ function App() {
     return (
       <nav>
         <Link to="/">
-          <div><MdLocalMovies />Video List</div>
+          <div>
+            <MdLocalMovies />
+            Video List
+          </div>
         </Link>
         <Link to="/myfavorites">
-          <div><BsBookmarksFill />My Favorites</div>
+          <div>
+            <BsBookmarksFill />
+            My Favorites
+          </div>
         </Link>
       </nav>
-    )
-  }
+    );
+  };
 
   return (
     <Context.Provider value={store}>
