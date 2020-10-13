@@ -41,7 +41,7 @@
 }
 
 .watch-page-wrapper {
-  margin: 24px auto 100px;
+  margin: 0 auto 100px;
   width: 100%;
 }
 
@@ -100,5 +100,20 @@
 
   @media screen and (min-width: 960px) {
     width: 80%;
+  }
+}
+
+.video-hint-bar {
+  width: 100%;
+  padding: 8px;
+  background-color: lightpink;
+  font-size: 12px;
+
+  > span {
+    padding: 0 8px;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
 }

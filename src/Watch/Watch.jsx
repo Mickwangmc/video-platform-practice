@@ -13,6 +13,7 @@ const Watch = () => {
     Context
   );
   const [isFavorite, setIsFavorite] = useState(false); 
+  const [isShowHint, setIsShowHint] = useState(false);
 
   const { videoId } = useParams();
   const targetVideoObj = videoList.find((videoObj) => videoObj.id === videoId);
@@ -24,6 +25,10 @@ const Watch = () => {
   const playerContainerRef = useRef(null);
 
   useEffect(() => {
+    const hasHintRead = JSON.parse(window.localStorage.getItem("hintRead"));
+
+    if (!hasHintRead) setIsShowHint(true);
+
     setIsFavorite(
       currentMyFavoritesList && currentMyFavoritesList.includes(videoId)
     );
@@ -35,8 +40,20 @@ const Watch = () => {
     setIsFavorite(!isFavorite);
   };
 
+  const handleHintRead = () => {
+    setIsShowHint(false);
+    window.localStorage.setItem("hintRead", JSON.stringify(true))
+  };
+
   return (
     <div className={cx("watch-page-wrapper")}>
+      {isShowHint && (
+        <div className={cx("video-hint-bar")}>
+          HINT: Press key "RIGHT" to forward, "LEFT" to backward. "UP" and
+          "DOWN" can change volume.
+          <span onClick={handleHintRead}>OK! Hide this hint.</span>
+        </div>
+      )}
       <div className={cx("player-container")} ref={playerContainerRef}>
         <Player />
       </div>
